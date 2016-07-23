@@ -6,9 +6,6 @@ var animatePoints = function(points) {
         point.style.transform = "scaleX(1) translateY(0)";
         point.style.msTransform = "scaleX(1) translateY(0)";
         point.style.WebkitTransform = "scaleX(1) translateY(0)";
-        point.style.transitionDelay = ".5s";
-        //points.style.backgroundColor = "rgba(255, 255, 255, .1)";
-        //points.style.borderRadius = "5%";
     };
     forEach(points, revealPoint);
 };
