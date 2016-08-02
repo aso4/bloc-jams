@@ -46,6 +46,8 @@
      ]
  };
 
+var allAlbums = [albumPicasso, albumMarconi, albumForeigner];
+
  var createSongRow = function(songNumber, songName, songLength) {
      var template =
         '<tr class="album-view-song-item">'
@@ -55,37 +57,39 @@
       + '</tr>'
       ;
  
-     return template;
+     return $(template);
  };
 
 var setCurrentAlbum = function(album) {
-     // #1
-     var albumTitle = document.getElementsByClassName('album-view-title')[0];
-     var albumArtist = document.getElementsByClassName('album-view-artist')[0];
-     var albumReleaseInfo = document.getElementsByClassName('album-view-release-info')[0];
-     var albumImage = document.getElementsByClassName('album-cover-art')[0];
-     var albumSongList = document.getElementsByClassName('album-view-song-list')[0];
+     var $albumTitle = $('.album-view-title');
+     var $albumArtist = $('.album-view-artist');
+     var $albumReleaseInfo = $('.album-view-release-info');
+     var $albumImage = $('.album-cover-art');
+     var $albumSongList = $('.album-view-song-list');
  
-     // #2
-     albumTitle.firstChild.nodeValue = album.title;
-     albumArtist.firstChild.nodeValue = album.artist;
-     albumReleaseInfo.firstChild.nodeValue = album.year + ' ' + album.label;
-     albumImage.setAttribute('src', album.albumArtUrl);
+     $albumTitle.text(album.title);
+     $albumArtist.text(album.artist);
+     $albumReleaseInfo.text(album.year + ' ' + album.label);
+     $albumImage.attr('src', album.albumArtUrl);
  
      // #3
-     albumSongList.innerHTML = '';
+     $albumSongList.empty();
  
      // #4
      for (var i = 0; i < album.songs.length; i++) {
-         albumSongList.innerHTML += createSongRow(i + 1, album.songs[i].title, album.songs[i].duration);
+         var $newRow = createSongRow(i + 1, album.songs[i].title, album.songs[i].duration);
+         $albumSongList.append($newRow);
      }
  };
 
 function findParentByClassName (element, className) {
     if (element) { // element exists
         var currentElement = element.parentElement;
-        while (currentElement != className && newClassName !== null) {
-            currentElement = newClassName.parentElement; // set to new parent
+        if (currentElement == null) {
+            alert("No parent found");
+        }
+        while (currentElement != className && currentElement !== null) {
+            currentElement = currentElement.parentElement; // set to new parent
         }
         return currentElement;
     }
@@ -119,7 +123,20 @@ var pauseButtonTemplate = '<a class="album-song-button"><span class="ion-pause">
  var currentlyPlayingSong = null;
 
  window.onload = function() {
-    setCurrentAlbum(albumBeatles);
+ 	setCurrentAlbum(allAlbums[0]);
+	//sets a count variable to hold a position within event Handler below
+	count = 1;
+	//albumImage, selected from document.getElementsByCLassName above, adds an event to listen for upon a click
+	albumImage.addEventListener("click", function(event) {
+		//onclick, setCurrentAlbum becomes the second album within array
+		setCurrentAlbum(allAlbums[count]);
+		//after click, count increase by 1
+		count++;
+		//then if count is the same as the array length, resets count back to 0
+		if (count == allAlbums.length) {
+			count = 0;
+		}
+	});
 
     var clickHandler = function(targetElement) {
         var songItem = getSongItem(targetElement);  
